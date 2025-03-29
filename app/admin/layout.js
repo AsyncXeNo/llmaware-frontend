@@ -33,7 +33,7 @@ export default function AdminLayout({ children }) {
                     await supabase.auth.signOut()
                     router.push('/admin/login')
                 } else if (pathname === '/admin/login') {
-                    router.push('/admin/dashboard')
+                    router.push('/admin/articles')
                 } else {
                     setLoading(false)
                 }

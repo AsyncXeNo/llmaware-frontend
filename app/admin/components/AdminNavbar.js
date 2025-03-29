@@ -27,7 +27,7 @@ function AdminNavbar () {
                     src='/images/logo.png'
                     alt='logo'
                     height={30}
-                    width={200}
+                    width={150}
                 />
 
                 {/* Links */}
@@ -36,11 +36,10 @@ function AdminNavbar () {
                                 items-center justify-center
                                 text-white font-roboto text-[17px]'>
 
-                    <NavLink text='HOME (PUBLIC)' redirect='/' />           
-                    <NavLink text='HOME (DASHBOARD)' redirect='/admin/dashboard' />
-                    <NavLink text='AUTHORS' redirect='/admin/authors' />
+                    <NavLink text='BACK TO HOMEPAGE' redirect='/' />           
                     <NavLink text='ARTICLES' redirect='/admin/articles' />
-                    <NavLink text='TAGS AND CATEGORIES' redirect='/admin/tags-n-categories' />
+                    <NavLink text='AUTHORS' redirect='/admin/authors' />
+                    <NavLink text='TAGS AND CATEGORIES' redirect='/admin/tags_categories' />
 
                 </div>
             </div>

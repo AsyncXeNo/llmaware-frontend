@@ -17,10 +17,12 @@ export default async function Authors() {
         .select('*')
         .order('created_at', { ascending: false })
 
+
     if (error) {
         console.error('Error fetching authors:', error)
     }
 
+    
     return (
         <>
             <AdminNavbar />

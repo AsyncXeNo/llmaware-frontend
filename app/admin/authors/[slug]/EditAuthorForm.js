@@ -1,4 +1,3 @@
-// app/admin/authors/[slug]/EditAuthorForm.jsx
 'use client'
 
 import Link from 'next/link'
@@ -6,10 +5,14 @@ import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import Notification from '@/components/notification/Notification'
+
+
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
+
 
 export default function EditAuthorForm({ author }) {
     const router = useRouter()
@@ -21,12 +24,13 @@ export default function EditAuthorForm({ author }) {
     const [file, setFile] = useState(null)
     const [notification, setNotification] = useState('')
     const [showNotification, setShowNotification] = useState(false)
-    const [isUpdating, setIsUpdating] = useState(false) // Track update state
-    const [isDeleting, setIsDeleting] = useState(false) // Track delete state
+    const [isUpdating, setIsUpdating] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setIsUpdating(true) // Disable update button
+        setIsUpdating(true)
 
         try {
             let profilePictureUrl = author.profile_picture_url
@@ -38,7 +42,7 @@ export default function EditAuthorForm({ author }) {
             }
 
             if (file) {
-                // Delete existing file if it exists
+                
                 if (profilePictureUrl) {
                     const oldFileName = profilePictureUrl.split('/').pop()
                     await supabase.storage
@@ -46,11 +50,10 @@ export default function EditAuthorForm({ author }) {
                         .remove([oldFileName])
                 }
 
-                // Upload new file
                 const fileExt = file.name.split('.').pop()
                 const fileName = `${formData.slug}-${Date.now()}.${fileExt}`
                 const { data, error: uploadError } = await supabase.storage
-                    .from('llmaware') // Replace with your bucket name
+                    .from('llmaware')
                     .upload(fileName, file)
 
                 if (uploadError) throw uploadError
@@ -75,6 +78,7 @@ export default function EditAuthorForm({ author }) {
                 setShowNotification(false)
                 router.refresh()
             }, 5000)
+
         } catch (error) {
             setNotification('Error updating author: ' + error.message)
             setShowNotification(true)
@@ -82,18 +86,19 @@ export default function EditAuthorForm({ author }) {
                 setShowNotification(false)
             }, 5000)
             console.error('Error updating author:', error)
+
         } finally {
-            setIsUpdating(false) // Re-enable update button
+            setIsUpdating(false)
         }
     }
 
     const handleDelete = async () => {
         if (!confirm('Are you sure you want to delete this author? This will also remove their profile picture.')) return
 
-        setIsDeleting(true) // Disable delete button
+        setIsDeleting(true)
 
         try {
-            // Delete the profile picture from the bucket if it exists
+
             if (author.profile_picture_url) {
                 const fileName = author.profile_picture_url.split('/').pop()
                 const { error: storageError } = await supabase.storage
@@ -103,7 +108,6 @@ export default function EditAuthorForm({ author }) {
                 if (storageError) throw storageError
             }
 
-            // Delete the author from the database
             const { error } = await supabase
                 .from('authors')
                 .delete()
@@ -112,40 +116,37 @@ export default function EditAuthorForm({ author }) {
             if (error) throw error
 
             router.push('/admin/authors')
+
         } catch (error) {
+
             setNotification('Error deleting author: ' + error.message)
             setShowNotification(true)
             setTimeout(() => {
                 setShowNotification(false)
             }, 5000)
             console.error('Error deleting author:', error)
+
         } finally {
-            setIsDeleting(false) // Re-enable delete button
+            setIsDeleting(false)
         }
     }
+
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
+
     const handleFileChange = (e) => {
         setFile(e.target.files[0])
     }
 
+
     return (
         <div className='font-poppins'>
             {showNotification && (
-                <div className='fixed bottom-[50px] left-1/2 transform -translate-x-1/2 z-50'>
-                    <div
-                        className='bg-black text-orange border border-orange px-[15px] py-[7px] rounded-full animate-fade-up text-[15px] font-medium'
-                        style={{
-                            animation: 'fadeUp 0.3s ease-out, fadeOut 0.3s ease-in 4.7s forwards'
-                        }}
-                    >
-                        {notification}
-                    </div>
-                </div>
+                <Notification notificationText={notification} />
             )}
 
             <form onSubmit={handleSubmit} className='flex flex-col gap-[20px]'>
@@ -209,7 +210,7 @@ export default function EditAuthorForm({ author }) {
                 <div className='flex gap-[10px] mt-[20px]'>
                     <Link
                         href='/admin/authors'
-                        className={`px-[20px] py-[6px] border border-white text-white font-medium hover:text-black hover:bg-white cursor-pointer`}
+                        className={`px-[20px] py-[6px] border border-white text-white font-medium hover:text-dark hover:bg-white cursor-pointer`}
                     >
                         Back
                     </Link>

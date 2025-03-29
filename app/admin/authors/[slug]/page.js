@@ -1,4 +1,3 @@
-// app/admin/authors/[slug]/page.jsx
 import AdminNavbar from '../../components/AdminNavbar'
 import { createClient } from '@supabase/supabase-js'
 import EditAuthorForm from './EditAuthorForm'
@@ -34,7 +33,7 @@ export default async function EditAuthor({ params }) {
     return (
         <>
             <AdminNavbar />
-            <div className='px-[20px] sm:px-[50px] lg:px-[144px] mt-[100px] flex flex-col gap-[20px]'>
+            <div className='px-[20px] sm:px-[50px] lg:px-[144px] my-[100px] flex flex-col gap-[20px]'>
                 <h3 className='font-roboto font-bold text-[30px] tracking-wider'>authors / <span className='text-orange'>{slug}</span></h3>
                 <div className='w-full border-t border-white/[0.3]' />
                 <EditAuthorForm author={author} />

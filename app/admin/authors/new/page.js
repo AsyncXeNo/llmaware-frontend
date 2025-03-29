@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import Notification from '@/components/notification/Notification'
 import AdminNavbar from '../../components/AdminNavbar'
 
 
@@ -91,16 +92,7 @@ export default function NewAuthor() {
                 <div className='w-full border-t border-white/[0.3]' />
 
                 {showNotification && (
-                    <div className='fixed bottom-[50px] left-1/2 transform -translate-x-1/2 z-50'>
-                        <div
-                            className='bg-black text-orange border border-orange px-[15px] py-[7px] rounded-full animate-fade-up text-[15px] font-medium'
-                            style={{
-                                animation: 'fadeUp 0.3s ease-out, fadeOut 0.3s ease-in 4.7s forwards'
-                            }}
-                        >
-                            {notification}
-                        </div>
-                    </div>
+                    <Notification notificationText={notification} />
                 )}
 
                 <form onSubmit={handleSubmit} className='flex flex-col gap-[20px]'>
@@ -152,7 +144,7 @@ export default function NewAuthor() {
                     <div className='flex gap-[10px] mt-[20px]'>
                         <Link
                             href='/admin/authors'
-                            className={`px-[20px] py-[6px] border border-white text-white font-medium hover:text-black hover:bg-white cursor-pointer`}
+                            className={`px-[20px] py-[6px] border border-white text-white font-medium hover:text-dark hover:bg-white cursor-pointer`}
                         >
                             Back
                         </Link>

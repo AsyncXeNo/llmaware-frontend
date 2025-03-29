@@ -2,31 +2,35 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import { FaCopy } from 'react-icons/fa'
+
+import Notification from '@/components/notification/Notification'
+
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
 
+
 export default function AuthorsTable({ authors }) {
     const router = useRouter()
     const [hoveredDescription, setHoveredDescription] = useState(null)
     const [showNotification, setShowNotification] = useState(false)
     const [notification, setNotification] = useState('')
-    const [deletingAuthors, setDeletingAuthors] = useState({}) // Track deleting state per author
+    const [deletingAuthors, setDeletingAuthors] = useState({})
+
 
     async function handleDelete(authorId) {
         if (!confirm('Are you sure you want to delete this author?')) return
 
         try {
-            // Set the author as being deleted
+
             setDeletingAuthors(prev => ({ ...prev, [authorId]: true }))
 
-            // Fetch the author to get the profile_picture_url
             const { data: author, error: fetchError } = await supabase
                 .from('authors')
                 .select('profile_picture_url')
@@ -35,7 +39,6 @@ export default function AuthorsTable({ authors }) {
 
             if (fetchError) throw fetchError
 
-            // Delete the file from the bucket if it exists
             if (author.profile_picture_url) {
                 const fileName = author.profile_picture_url.split('/').pop()
                 const { error: storageError } = await supabase.storage
@@ -45,7 +48,6 @@ export default function AuthorsTable({ authors }) {
                 if (storageError) throw storageError
             }
 
-            // Delete the author from the database
             const { error } = await supabase
                 .from('authors')
                 .delete()
@@ -60,20 +62,25 @@ export default function AuthorsTable({ authors }) {
             setTimeout(() => {
                 setShowNotification(false)
             }, 5000)
+
+            setDeletingAuthors(prev => ({ ...prev, [authorId]: false }))
+
         } catch (error) {
+
             setNotification('Error deleting author: ' + error.message)
             setShowNotification(true)
             setTimeout(() => {
                 setShowNotification(false)
             }, 5000)
             console.error('Error deleting author:', error)
-        } finally {
-            // Reset the deleting state regardless of success or failure
+
             setDeletingAuthors(prev => ({ ...prev, [authorId]: false }))
+
         }
     }
 
     const copyToClipboard = (text) => {
+
         navigator.clipboard.writeText(text)
             .then(() => {
                 setNotification('Copied to Clipboard!')
@@ -90,32 +97,24 @@ export default function AuthorsTable({ authors }) {
                 }, 5000)
                 console.error('Failed to copy: ', err)
             })
+
     }
 
     return (
         <div className='relative overflow-x-auto font-poppins'>
             {hoveredDescription && (
-                <div className='fixed z-50 max-w-[800px] bg-black border border-white text-white text-[15px] p-[10px] pointer-events-none'>
+                <div className='fixed z-50 max-w-[800px] bg-dark border border-white text-white text-[15px] p-[10px] pointer-events-none'>
                     {hoveredDescription}
                 </div>
             )}
             {showNotification && (
-                <div className='fixed bottom-[50px] left-1/2 transform -translate-x-1/2 z-50'>
-                    <div
-                        className='bg-black text-orange border border-orange px-[15px] py-[7px] rounded-full animate-fade-up text-[15px] font-poppins font-medium'
-                        style={{
-                            animation: 'fadeUp 0.3s ease-out, fadeOut 0.3s ease-in 4.7s forwards'
-                        }}
-                    >
-                        {notification}
-                    </div>
-                </div>
+                <Notification notificationText={notification} />
             )}
             {authors.length > 0 ? (
                 <>
                     <table className='w-full border-collapse text-[15px]'>
                         <thead>
-                            <tr className='bg-white text-black'>
+                            <tr className='bg-white text-dark'>
                                 <th className='p-3 text-left font-semibold border-b'>Name</th>
                                 <th className='p-3 text-left font-semibold border-b'>Description</th>
                                 <th className='p-3 text-left font-semibold border-b'>Slug</th>

@@ -42,7 +42,7 @@ function Navbar () {
                     src='/images/logo.png'
                     alt='logo'
                     height={30}
-                    width={200}
+                    width={150}
                 />
 
                 {/* Links */}

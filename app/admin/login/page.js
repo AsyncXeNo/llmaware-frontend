@@ -46,7 +46,7 @@ export default function AdminLogin() {
             } else {
                 const adminCheck = await isAdmin()
                 if (adminCheck) {
-                    router.push('/admin/dashboard')
+                    router.push('/admin/articles')
                 } else {
                     await supabase.auth.signOut()
                     setMessage('You are not authorized as an admin.')
@@ -63,7 +63,7 @@ export default function AdminLogin() {
     return (
         <div className='min-h-screen w-screen flex items-center justify-center bg-dark'>
             <div
-                className='w-[500px] min-h-[300px] py-[40px] px-[30px] bg-black 
+                className='w-[500px] min-h-[300px] py-[40px] px-[30px] bg-dark 
                    border border-blue text-white flex flex-col gap-[40px] 
                    items-center justify-between shadow'
             >
